@@ -33,9 +33,7 @@ and is wrapped around the whole page content, except for the footer in this exam
                         <h5>basic struktūra template lapai <span class="w3-opacity">September 26, 2019</span></h5>
                     </div>
 
-                    <div class="w3-container">
-                        <script src="https://d3js.org/d3.v3.min.js"></script>
-
+                    <div class="w3-container" id="test">
                         <script>
 
                             var margin = { top: 20, right: 20, bottom: 70, left: 40 },
@@ -59,7 +57,7 @@ and is wrapped around the whole page content, except for the footer in this exam
                                 .orient("left")
                                 .ticks(10);
 
-                            var svg = d3.select("body").append("svg")
+                            var svg = d3.select("#test").append("svg")
                                 .attr("width", width + margin.left + margin.right)
                                 .attr("height", height + margin.top + margin.bottom)
                                 .append("g")
