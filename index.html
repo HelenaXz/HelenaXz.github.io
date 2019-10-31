@@ -36,7 +36,75 @@ and is wrapped around the whole page content, except for the footer in this exam
                     </div>
 
                     <div class="w3-container" id="test"></div>
-                    <script src="./index.js"></script>
+                    <script src="./index.js">
+                        var margin = { top: 20, right: 20, bottom: 70, left: 40 },
+                            width = 600 - margin.left - margin.right,
+                            height = 300 - margin.top - margin.bottom;
+
+                        // Parse the date / time
+                        var parseDate = d3.time.format("%Y-%m").parse;
+
+                        var x = d3.scale.ordinal().rangeRoundBands([0, width], .05);
+
+                        var y = d3.scale.linear().range([height, 0]);
+
+                        var xAxis = d3.svg.axis()
+                            .scale(x)
+                            .orient("bottom")
+                            .tickFormat(d3.time.format("%Y-%m"));
+
+                        var yAxis = d3.svg.axis()
+                            .scale(y)
+                            .orient("left")
+                            .ticks(10);
+
+                        var svg = d3.select("#test").append("svg")
+                            .attr("width", width + margin.left + margin.right)
+                            .attr("height", height + margin.top + margin.bottom)
+                            .append("g")
+                            .attr("transform",
+                                "translate(" + margin.left + "," + margin.top + ")");
+
+                        d3.csv("bar-data.csv", function (error, data) {
+
+                            data.forEach(function (d) {
+                                d.date = parseDate(d.date);
+                                d.value = +d.value;
+                            });
+
+                            x.domain(data.map(function (d) { return d.date; }));
+                            y.domain([0, d3.max(data, function (d) { return d.value; })]);
+
+                            svg.append("g")
+                                .attr("class", "x axis")
+                                .attr("transform", "translate(0," + height + ")")
+                                .call(xAxis)
+                                .selectAll("text")
+                                .style("text-anchor", "end")
+                                .attr("dx", "-.8em")
+                                .attr("dy", "-.55em")
+                                .attr("transform", "rotate(-90)");
+
+                            svg.append("g")
+                                .attr("class", "y axis")
+                                .call(yAxis)
+                                .append("text")
+                                .attr("transform", "rotate(-90)")
+                                .attr("y", 6)
+                                .attr("dy", ".71em")
+                                .style("text-anchor", "end")
+                                .text("Value ($)");
+
+                            svg.selectAll("bar")
+                                .data(data)
+                                .enter().append("rect")
+                                .style("fill", "steelblue")
+                                .attr("x", function (d) { return x(d.date); })
+                                .attr("width", x.rangeBand())
+                                .attr("y", function (d) { return y(d.value); })
+                                .attr("height", function (d) { return height - y(d.value); });
+
+                        });</script>
                 </div>
                 <hr>
             </div>
@@ -50,7 +118,38 @@ and is wrapped around the whole page content, except for the footer in this exam
                         <h4><b>Another Heading</b></h4>
                         <p>Hello</p>
                         <svg class="bar-chart"></svg>
-                        <script src="./bar-chart.js"></script>
+                        <script src="./bar-chart.js">
+                            var dataset = [80, 120, 140, 30, 50, 190, 70, 12, 170];
+
+                            var svgWidth = 500;
+                            var svgHeight = 300;
+                            var barPadding = 5;
+                            var barWidth = (svgWidth / dataset.length)
+
+                            var svg = d3.select('svg')
+                                .attr('width', svgWidth)
+                                .attr('height', svgHeight);
+
+
+                            var myColor = d3.scaleLinear().domain([1, 15])
+                                .range(["white", "blue"]);
+
+                            var barchart = svg.selectAll('rect')
+                                .data(dataset) // provide the data in waiting state
+                                .enter() // enter method takes the dataset and complete futher operations
+                                .append('rect') //bars are rectangles
+                                .attr('y', function (d) { // 
+                                    return svgHeight - d
+                                })
+                                .attr('height', function (d) {
+                                    return d
+                                })
+                                .attr('width', barWidth - barPadding)
+                                .attr('transform', function (d, i) {
+                                    var translate = [barWidth * i, 0]; // barwidht * i būs nobīde uz labo pusi uz x ass
+                                    return "translate(" + translate + ")"; //takes two argument x and y for the location of the object
+                                })
+                                .attr("fill", function (d) { return myColor(d) });</script>
                     </div>
                 </div>
                 <hr>
